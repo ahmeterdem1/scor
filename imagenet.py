@@ -4,6 +4,7 @@ import random
 import shutil
 import time
 import warnings
+import pathlib
 from enum import Enum
 
 import torch
@@ -94,6 +95,7 @@ parser.add_argument('--loss', default="ce",
                              "Loss function options: "
                         + " | ".join(losses_.values())
                         + " (default: ce)")
+parser.add_argument('--outputpath', default=os.getcwd(), type=pathlib.Path, help='outputs such as checkpoints saved here')
 
 best_acc1 = 0
 
@@ -159,7 +161,8 @@ def main_worker(gpu, ngpus_per_node, args):
     # create model
     if args.pretrained:
         print("=> using pre-trained model '{}'".format(args.arch))
-        model = models.__dict__[args.arch](pretrained=True)
+        #model = models.__dict__[args.arch](pretrained=True)
+        model = models.__dict__[args.arch](weights="IMAGENET1K_V2")
     else:
         print("=> creating model '{}'".format(args.arch))
         model = models.__dict__[args.arch]()
@@ -331,7 +334,7 @@ def main_worker(gpu, ngpus_per_node, args):
                 'best_acc1': best_acc1,
                 'optimizer' : optimizer.state_dict(),
                 'scheduler' : scheduler.state_dict()
-            }, is_best)
+            }, is_best, path=args.outputpath)
 
 
 def train(train_loader, model, criterion, optimizer, epoch, device, args):
@@ -378,6 +381,9 @@ def train(train_loader, model, criterion, optimizer, epoch, device, args):
 
         if i % args.print_freq == 0:
             progress.display(i + 1)
+        
+        if i >2:
+            break
 
 
 def validate(val_loader, model, criterion, args):
@@ -442,10 +448,14 @@ def validate(val_loader, model, criterion, args):
     return top1.avg
 
 
-def save_checkpoint(state, is_best, filename='checkpoint.pth.tar'):
-    torch.save(state, filename)
+def save_checkpoint(state, is_best, filename='checkpoint.pth.tar', path=''):
+    #print(state)
+    full_path = os.path.join(path, filename)
+    print(full_path)
+    torch.save(state, full_path)
     if is_best:
-        shutil.copyfile(filename, 'model_best.pth.tar')
+        #print("Skipping Chkpt due to sync issues FBTEK!")
+        shutil.copyfile(full_path, 'model_best.pth.tar')
 
 class Summary(Enum):
     NONE = 0
