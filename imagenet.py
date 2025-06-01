@@ -382,8 +382,7 @@ def train(train_loader, model, criterion, optimizer, epoch, device, args):
         if i % args.print_freq == 0:
             progress.display(i + 1)
         
-        if i >2:
-            break
+     
 
 
 def validate(val_loader, model, criterion, args):

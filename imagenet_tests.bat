@@ -4,11 +4,11 @@ setlocal enabledelayedexpansion
 REM Base training parameters
 REM We Do just EPOCH number of fine-tuning training and then test. 
 set EPOCH=5 
-set LR=0.01
+set LR=1e-4
 set BATCH_SIZE=256
 
 REM Paths
-set OUTPUT_BASE=C:\users\fbtek\Dropbox\code\pythoncode\imagenet\logs\loss_ablation
+set OUTPUT_BASE=C:\users\fbtek\Dropbox\code\pythoncode\imagenet\logs\pretrained
 set ILSVRC_DIR=C:\datasets\ILSVRC\Data\CLS-LOC
 
 REM List of loss functions
@@ -30,6 +30,7 @@ for %%L in (%LOSSES%) do (
                            --pretrained ^
                            --loss %%L ^
                            --dist-backend gloo ^
+                           --seed 42 ^
                            --outputpath "!OUTDIR!" ^
                            >> "!OUTDIR!\loss_%%L_lr%LR%_ep%EPOCH%_b%BATCH_SIZE%.txt"
 )
