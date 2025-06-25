@@ -67,9 +67,9 @@ class OPL(nn.Module):
         self.cross_entropy = nn.CrossEntropyLoss()
         self.epsilon = epsilon
 
-    def forward(self, features, labels):
+    def forward(self, logits, labels, features):
         batch_size, feature_dim = features.shape
-        ce_loss_ = self.cross_entropy(features, labels)
+        ce_loss_ = self.cross_entropy(logits, labels)
 
         features = F.normalize(features, p=2, dim=1)
 
