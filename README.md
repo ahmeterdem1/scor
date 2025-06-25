@@ -1,5 +1,9 @@
 # Stochastic Covariance Regularization for Imbalanced Datasets
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+_pip install scor_
+
 ## imagenet.py
 
 This file is for training models with various loss functions on the ImageNet dataset.
