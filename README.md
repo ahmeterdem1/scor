@@ -1,4 +1,4 @@
-# Stochastic Covariance Regularization
+# Stochastic Covariance Regularization for Imbalanced Datasets
 
 ## imagenet.py
 
