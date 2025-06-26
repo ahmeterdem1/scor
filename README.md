@@ -41,7 +41,10 @@ This module hosts several training functions for several tests in the paper. The
 first phase of experiments in the paper, where MNIST and CIFAR-10 is artificially imbalanced by
 imbalancing a random class, or 9 random classes multiplicatively by a reduction factor.
 
-Functions here 
+## Examples
+
+Example notebooks that use the "scor" package for training on given datasets are provided under
+the "examples" directory.
 
 ## imagenet.py
 

@@ -67,7 +67,23 @@ def trainMLP(batch_size: int, device: str = "cuda",
              iterations: int = 1000, epochs: int = 5,
              path: str = "./results",
              *args, **kwargs):
+    """
+        Trains the "MLP" model class on MNIST for Cross Entropy Loss,
+        Label Smoothing (p=0.1), Focal Loss and SCoR.
 
+        MNIST is imbalanced by reducing a random class by the given
+        "reducing_factor" multiplicatively. The class is selected
+        randomly at each training repetition. The same dataset
+        partitions are shared across all 4 models that use a different
+        loss function.
+
+        Repeats training "iterations" times. Each training takes "epochs" number
+        of epochs.
+
+        Measures accuracy, f1 score, loss, rank, max singular value and min singular value
+        at the end of each training for each loss function. Saves results as a json under
+        "path" directory.
+    """
     ce_data, ls_data, focal_data, scor_data = get_empty_data_dict()
 
     train_loader: DataLoader
@@ -181,6 +197,16 @@ def trainMLPwithAlpha(
     alpha: float = 1e-04, path: str = "./results",
     *args, **kwargs
 ):
+    """
+        Trains the "MLP" model class on MNIST for SCoR with given alpha.
+
+        Repeats training "iterations" times. Each training takes "epochs" number
+        of epochs.
+
+        Measures accuracy, f1 score, loss, rank, max singular value and min singular value
+        at the end of each training. Saves results as a json under
+        "path" directory.
+    """
     _, _, _, scor_data = get_empty_data_dict()
 
     train_loader: DataLoader
@@ -242,8 +268,25 @@ def trainMLPwithAlpha(
 def trainTargetedMLP(batch_size: int, device: str = "cuda",
           iterations: int = 1000, epochs: int = 5, reducing_factor: float = 0.1,
           path: str = "./results", *args, **kwargs):
-    ce_data, ls_data, focal_data, scor_data = get_empty_data_dict()
 
+    ce_data, ls_data, focal_data, scor_data = get_empty_data_dict()
+    """
+        Trains the "MLP" model class on MNIST for Cross Entropy Loss,
+        Label Smoothing (p=0.1), Focal Loss and SCoR.
+
+        MNIST is imbalanced by reducing 9 random classes by the given
+        "reducing_factor" multiplicatively. The classes are selected
+        randomly at each training repetition. The same dataset 
+        partitions are shared across all 4 models that use a different
+        loss function.
+
+        Repeats training "iterations" times. Each training takes "epochs" number
+        of epochs. 
+
+        Measures accuracy, f1 score, loss, rank, max singular value and min singular value
+        at the end of each training for each loss function. Saves results as a json under
+        "path" directory.
+    """
     train_loader: DataLoader
     test_loader: DataLoader
     x_test: torch.Tensor
@@ -379,7 +422,23 @@ def trainTargetedMLP(batch_size: int, device: str = "cuda",
 def trainMLPwithdist(batch_size: int, device: str = "cuda",
           iterations: int = 1000, epochs: int = 5, path: str = "./results",
           *args, **kwargs):
+    """
+        Trains the "MLP" model class on MNIST for Cross Entropy Loss,
+        Label Smoothing (p=0.1), Focal Loss and SCoR.
 
+        MNIST is imbalanced by reducing a random class by the given
+        "reducing_factor" multiplicatively. The class is selected
+        randomly at each training repetition. The same dataset
+        partitions are shared across all 4 models that use a different
+        loss function.
+
+        Repeats training "iterations" times. Each training takes "epochs" number
+        of epochs.
+
+        Measures accuracy, f1 score, loss, rank, singular value distribution
+        at the end of each training for each loss function. Saves results as a json under
+        "path" directory.
+    """
     ce_data_dist, ls_data_dist, focal_data_dist, scor_data_dist = get_empty_dist_dict()
 
     train_loader: DataLoader
@@ -487,7 +546,23 @@ def trainTargetedMLPwithdist(batch_size: int, device: str = "cuda",
           iterations: int = 1000, epochs: int = 5, reducing_factor: float = 0.1,
           path: str = "./results", *args, **kwargs):
     ce_data_dist, ls_data_dist, focal_data_dist, scor_data_dist = get_empty_dist_dict()
+    """
+        Trains the "MLP" model class on MNIST for Cross Entropy Loss,
+        Label Smoothing (p=0.1), Focal Loss and SCoR.
 
+        MNIST is imbalanced by reducing 9 random classes by the given
+        "reducing_factor" multiplicatively. The classes are selected
+        randomly at each training repetition. The same dataset 
+        partitions are shared across all 4 models that use a different
+        loss function.
+
+        Repeats training "iterations" times. Each training takes "epochs" number
+        of epochs. 
+
+        Measures accuracy, f1 score, loss, rank, singular value distribution
+        at the end of each training for each loss function. Saves results as a json under
+        "path" directory.
+    """
     train_loader: DataLoader
     test_loader: DataLoader
     x_test: torch.Tensor
