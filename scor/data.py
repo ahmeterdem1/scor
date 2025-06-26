@@ -8,6 +8,7 @@ import numpy as np
 import os
 import shutil
 
+# Default transforms to be used by dataset loaders
 transform_ = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.RandomHorizontalFlip(),
@@ -29,12 +30,18 @@ uniformTransform = transforms.Compose([
     transforms.Normalize(mean=[0.4914, 0.4822, 0.4465], std=[0.2470, 0.2435, 0.2616]),
 ])
 
-def get_cifar10(transform=None,
+def getCifar10(transform=normalTransform,
                 batch_size: int = 64,
                 shuffle: bool = True,
                 num_workers: int = 0,
-                drop_last: bool = False):
+                drop_last: bool = False) -> tuple:
+    """
+        Load the CIFAR10 dataset. Tries to load the data from "./data" directory.
+        If not found, tries to download.
 
+        Returns:
+            Tuple: training partition DataLoader and testing partition DataLoader.
+    """
     train_set = CIFAR10(root='./data', train=True, download=True, transform=transform)
     test_set = CIFAR10(root='./data', train=False, download=True, transform=transform)
 
@@ -43,11 +50,18 @@ def get_cifar10(transform=None,
 
     return train_loader, test_loader
 
-def get_mnist(transform=None,
+def getMnist(transform=normalTransform,
               batch_size: int = 64,
               shuffle: bool = True,
               num_workers: int = 0,
-              drop_last: bool = False):
+              drop_last: bool = False) -> tuple:
+    """
+        Load the MNIST dataset. Tries to load the data from "./data" directory.
+        If not found, tries to download.
+
+        Returns:
+            Tuple: training partition DataLoader and testing partition DataLoader.
+    """
 
     train_set = MNIST(root='./data', train=True, download=True, transform=transform)
     test_set = MNIST(root='./data', train=False, download=True, transform=transform)
@@ -57,11 +71,18 @@ def get_mnist(transform=None,
 
     return train_loader, test_loader
 
-def get_flowers102(transform=transform_,
+def getFlowers102(transform=transform_,
                    batch_size: int = 32,
                    shuffle: bool = True,
                    num_workers: int = 0,
-                   drop_last: bool = False):
+                   drop_last: bool = False) -> tuple:
+    """
+        Load the Flowers-102 dataset. Tries to load the data from "./data" directory.
+        If not found, tries to download. Default arguments are as used in the paper.
+
+        Returns:
+            Tuple: training partition DataLoader and testing partition DataLoader.
+    """
 
     train_set = Flowers102(root="./data", split="train", download=True, transform=transform)
     test_set = Flowers102(root="./data", split="test", download=True, transform=transform)
@@ -71,11 +92,18 @@ def get_flowers102(transform=transform_,
 
     return train_loader, test_loader
 
-def get_oxfordpets(transform=transform_,
+def getOxfordpets(transform=transform_,
                    batch_size: int = 32,
                    shuffle: bool = True,
                    num_workers: int = 0,
-                   drop_last: bool = False):
+                   drop_last: bool = False) -> tuple:
+    """
+        Load the Oxford IIIT Pets dataset. Tries to load the data from "./data" directory.
+        If not found, tries to download. Default arguments are as used in the paper.
+
+        Returns:
+            Tuple: training partition DataLoader and testing partition DataLoader.
+    """
     train_set = OxfordIIITPet(root="./data", split="trainval", download=True, transform=transform)
     test_set = OxfordIIITPet(root="./data", split="test", download=True, transform=transform)
 
@@ -86,12 +114,18 @@ def get_oxfordpets(transform=transform_,
 
     return train_loader, test_loader
 
-def get_stl10(transform=transform_,
+def getStl10(transform=transform_,
               batch_size: int = 128,
               shuffle: bool = True,
               num_workers: int = 0,
-              drop_last: bool = False):
+              drop_last: bool = False) -> tuple:
+    """
+        Load the STL-10 dataset. Tries to load the data from "./data" directory.
+        If not found, tries to download. Default arguments are as used in the paper.
 
+        Returns:
+            Tuple: training partition DataLoader and testing partition DataLoader.
+    """
     train_set = STL10(root="./data", split="train", download=True, transform=transform)
     test_set = STL10(root="./data", split="test", download=True, transform=transform)
 
@@ -102,12 +136,18 @@ def get_stl10(transform=transform_,
 
     return train_loader, test_loader
 
-def get_dtd(transform=transform_,
+def getDtd(transform=transform_,
             batch_size: int = 32,
             shuffle: bool = True,
             num_workers: int = 0,
-            drop_last: bool = False):
+            drop_last: bool = False) -> tuple:
+    """
+        Load the DTD dataset for classification. Tries to load the data from "./data" directory.
+        If not found, tries to download. Default arguments are as used in the paper.
 
+        Returns:
+            Tuple: training partition DataLoader and testing partition DataLoader.
+    """
     train_set = DTD(root="./data", split="train", download=True, transform=transform)
     test_set = DTD(root="./data", split="test", download=True, transform=transform)
 
@@ -118,15 +158,23 @@ def get_dtd(transform=transform_,
 
     return train_loader, test_loader
 
-def get_lfw(lfw_root: str,
+def getLfw(lfw_root: str,
             transform=transform_,
             batch_size: int = 128,
             trainset_size: float = 0.8,
             shuffle: bool = True,
             num_workers: int = 0,
             drop_last: bool = False,
-            exclude: int = 5):
+            exclude: int = 5) -> tuple:
+    """
+        Process and load LFW People dataset for classification. Expects "lfw_root"
+        path as a string, to point to the image folders of LFW. Deletes all class
+        folders with less than `exclude` number of images. Default arguments are as
+        used in the paper.
 
+        Returns:
+            Tuple: training partition DataLoader and testing partition DataLoader.
+    """
     for folder in os.listdir(lfw_root):
         folder_path = os.path.join(lfw_root, folder)
         if os.path.isdir(folder_path):  # Check if it's a directory
@@ -154,7 +202,15 @@ def loadMNIST(transform: transforms.Compose = normalTransform, batch_size: int =
     return train_loader, test_loader
 
 def getUnbalancedMNIST(batch_size: int, split: float = 0.8, transform: transforms.Compose = normalTransform,
-                       reducing_factor: float = 0.05, target_class: int = None):
+                       reducing_factor: float = 0.05, target_class: int = None) -> tuple:
+
+    """
+        Loads the MNIST dataset while making a random class imbalanced by "reducing_factor"
+        multiplicatively.
+
+        Returns:
+            Tuple: training partition DataLoader and testing partition DataLoader.
+    """
 
     if target_class is None:
         target_class = np.random.randint(0, 10)
@@ -194,8 +250,14 @@ def getUnbalancedMNIST9(
         transform: transforms.Compose = normalTransform,
         reducing_factor: float = 0.1,
         target_class: int = None
-):
+) -> tuple:
+    """
+        Loads the MNIST dataset while making 9 random classes imbalanced by "reducing_factor"
+        multiplicatively.
 
+        Returns:
+            Tuple: training partition DataLoader and testing partition DataLoader.
+    """
     if target_class is None:
         target_class = np.random.randint(0, 10)
 
@@ -261,7 +323,15 @@ def getUnbalancedCIFAR(
         transform: transforms.Compose = uniformTransform,
         reducing_factor: float = 0.05,
         target_class: int = None
-):
+) -> tuple:
+
+    """
+        Loads the CIFAR-10 dataset while making a random class imbalanced by "reducing_factor"
+        multiplicatively.
+
+        Returns:
+            Tuple: training partition DataLoader and testing partition DataLoader.
+    """
 
     if target_class is None:
         target_class = np.random.randint(0, 10)
@@ -304,8 +374,14 @@ def getUnbalancedCIFAR9(
         transform: transforms.Compose = uniformTransform,
         reducing_factor: float = 0.05,
         target_class: int = None
-):
+) -> tuple:
+    """
+        Loads the CIFAR-10 dataset while making 9 random classes imbalanced by "reducing_factor"
+        multiplicatively.
 
+        Returns:
+            Tuple: training partition DataLoader and testing partition DataLoader.
+    """
     if target_class is None:
         target_class = np.random.randint(0, 10)
 
@@ -337,7 +413,12 @@ def getUnbalancedCIFAR9(
 
     return train_loader, test_loader
 
-def loaderToData(dataloader: DataLoader):
+def loaderToData(dataloader: DataLoader) -> tuple:
+
+    """
+        Converts a data loader into 2 tensors, inputs and target labels.
+    """
+
     x_list = []
     y_list = []
 

@@ -6,7 +6,7 @@ class SCoR(nn.Module):
 
     def __init__(self, alpha: float = 1e-04):
         """
-            Stochastic Covariance Regularisation. Default alpha is 1e-04.
+            Stochastic Covariance Regularization. Default alpha is 1e-04.
 
         """
         super().__init__()
@@ -89,6 +89,11 @@ class OPL(nn.Module):
         return ce_loss_ + self.alpha * loss / batch_size
 
 class FocalLoss(nn.Module):
+
+    """
+        Focal Loss with no class specific alpha. Gamma
+        is selected as stated in the original paper.
+    """
 
     def __init__(self, gamma: float = 2):
         super().__init__()

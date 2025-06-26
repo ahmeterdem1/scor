@@ -20,6 +20,10 @@ from sklearn.metrics import f1_score
 
 class MLP(nn.Module):
 
+    """
+        The basic MLP architecture used in the paper.
+    """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.sequence = nn.Sequential(
@@ -347,9 +351,7 @@ class FaceVerificationModel(nn.Module):
 def getMLP(device: str = "cuda", loss: str = "ce", *args, **kwargs):
 
     """
-
         Generate an MLP, with a dedicated loss function and a fresh optimizer.
-
     """
 
     model = MLP().to(device)
@@ -367,9 +369,7 @@ def getMLP(device: str = "cuda", loss: str = "ce", *args, **kwargs):
 def getResNet(device: str, loss: str = "ce", *args, **kwargs):
 
     """
-
         Generate a ResNet, with a dedicated loss function and a fresh optimizer.
-
     """
 
     model = ResNet().to(device)

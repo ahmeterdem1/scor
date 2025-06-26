@@ -5,7 +5,6 @@ from itertools import chain
 def perturbations(model: nn.Module, epsilon: float = 1e-07):
 
     """
-
         Calculates ranks, maximum singular values and minimum singular values
         as "measures" of matrix perturbations.
     """
