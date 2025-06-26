@@ -3,6 +3,13 @@ import torch.nn as nn
 from itertools import chain
 
 def perturbations(model: nn.Module, epsilon: float = 1e-07):
+
+    """
+
+        Calculates ranks, maximum singular values and minimum singular values
+        as "measures" of matrix perturbations.
+    """
+
     ranks = []
     max_singulars = []
     min_singulars = []
@@ -20,7 +27,13 @@ def perturbations(model: nn.Module, epsilon: float = 1e-07):
 
     return ranks, max_singulars, min_singulars
 
-def spectral_dist(model: nn.Module, epsilon: float = 1e-07):
+def spectralDist(model: nn.Module, epsilon: float = 1e-07):
+
+    """
+        Calculates ranks and all singular values of all weight matrix of the
+        give model, for the evaluation of spectral distributions.
+    """
+
     ranks = []
     singulars = []
     s: torch.Tensor

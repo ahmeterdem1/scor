@@ -15,6 +15,47 @@ def get_empty_data_dict():
     scor_data = {"acc": [], "f1": [], "loss": [], "max_singular": [], "min_singular": [], "ranks": []}
     return ce_data, ls_data, focal_data, scor_data
 
+def save_data_dicts(ce_data: dict,
+                    ls_data: dict,
+                    focal_data: dict,
+                    scor_data: dict,
+                    batch_size: int,
+                    path: str = "./results"):
+    timestamp = datetime.now().timestamp()
+
+    with open(f"{path}/ce_data_{timestamp}_{batch_size}.json", "w", encoding="utf-8") as file:
+        json.dump(ce_data, file, ensure_ascii=False, indent=4)
+
+    with open(f"{path}/ls_data_{timestamp}_{batch_size}.json", "w", encoding="utf-8") as file:
+        json.dump(ls_data, file, ensure_ascii=False, indent=4)
+
+    with open(f"{path}/focal_data_{timestamp}_{batch_size}.json", "w", encoding="utf-8") as file:
+        json.dump(focal_data, file, ensure_ascii=False, indent=4)
+
+    with open(f"{path}/scor_data_{timestamp}_{batch_size}.json", "w", encoding="utf-8") as file:
+        json.dump(scor_data, file, ensure_ascii=False, indent=4)
+
+def save_dist_dicts(ce_data: dict,
+                    ls_data: dict,
+                    focal_data: dict,
+                    scor_data: dict,
+                    batch_size: int,
+                    path: str = "./results"):
+
+    timestamp = datetime.now().timestamp()
+
+    with open(f"{path}/ce_data_{timestamp}_{batch_size}_dist.json", "w", encoding="utf-8") as file:
+        json.dump(ce_data, file, ensure_ascii=False, indent=4)
+
+    with open(f"{path}/ls_data_{timestamp}_{batch_size}_dist.json", "w", encoding="utf-8") as file:
+        json.dump(ls_data, file, ensure_ascii=False, indent=4)
+
+    with open(f"{path}/focal_data_{timestamp}_{batch_size}_dist.json", "w", encoding="utf-8") as file:
+        json.dump(focal_data, file, ensure_ascii=False, indent=4)
+
+    with open(f"{path}/scor_data_{timestamp}_{batch_size}_dist.json", "w", encoding="utf-8") as file:
+        json.dump(scor_data, file, ensure_ascii=False, indent=4)
+
 def get_empty_dist_dict():
     ce_data_dist = {"acc": [], "f1": [], "loss": [], "singulars": [], "ranks": []}
     ls_data_dist = {"acc": [], "f1": [], "loss": [], "singulars": [], "ranks": []}
@@ -23,8 +64,9 @@ def get_empty_dist_dict():
     return ce_data_dist, ls_data_dist, focal_data_dist, scor_data_dist
 
 def trainMLP(batch_size: int, device: str = "cuda",
-          iterations: int = 1000, epochs: int = 5,
-          *args, **kwargs):
+             iterations: int = 1000, epochs: int = 5,
+             path: str = "./results",
+             *args, **kwargs):
 
     ce_data, ls_data, focal_data, scor_data = get_empty_data_dict()
 
@@ -126,41 +168,17 @@ def trainMLP(batch_size: int, device: str = "cuda",
                 print(f"Training done %{(((i + 1) * 100) / iterations):.5f} | Batch size: {batch_size}")
                 print(f"ETA: {eta:.5f}s")
 
-        timestamp = datetime.now().timestamp()
-
-        with open(f"results/ce_data_{timestamp}_{batch_size}.json", "w", encoding="utf-8") as file:
-            json.dump(ce_data, file, ensure_ascii=False, indent=4)
-
-        with open(f"results/ls_data_{timestamp}_{batch_size}.json", "w", encoding="utf-8") as file:
-            json.dump(ls_data, file, ensure_ascii=False, indent=4)
-
-        with open(f"results/focal_data_{timestamp}_{batch_size}.json", "w", encoding="utf-8") as file:
-            json.dump(focal_data, file, ensure_ascii=False, indent=4)
-
-        with open(f"results/scor_data_{timestamp}_{batch_size}.json", "w", encoding="utf-8") as file:
-            json.dump(scor_data, file, ensure_ascii=False, indent=4)
+        save_data_dicts(ce_data, ls_data, focal_data, scor_data, batch_size, path)
 
     except Exception as e:
         print(f"An exception occurred: {e}")
 
-        timestamp = datetime.now().timestamp()
-
-        with open(f"results/ce_data_{timestamp}_{batch_size}.json", "w", encoding="utf-8") as file:
-            json.dump(ce_data, file, ensure_ascii=False, indent=4)
-
-        with open(f"results/ls_data_{timestamp}_{batch_size}.json", "w", encoding="utf-8") as file:
-            json.dump(ls_data, file, ensure_ascii=False, indent=4)
-
-        with open(f"results/focal_data_{timestamp}_{batch_size}.json", "w", encoding="utf-8") as file:
-            json.dump(focal_data, file, ensure_ascii=False, indent=4)
-
-        with open(f"results/scor_data_{timestamp}_{batch_size}.json", "w", encoding="utf-8") as file:
-            json.dump(scor_data, file, ensure_ascii=False, indent=4)
+        save_data_dicts(ce_data, ls_data, focal_data, scor_data, batch_size, path)
 
 def trainMLPwithAlpha(
     batch_size: int, device: str = "cuda",
     iterations: int = 1000, epochs: int = 5,
-    alpha: float = 1e-04,
+    alpha: float = 1e-04, path: str = "./results",
     *args, **kwargs
 ):
     _, _, _, scor_data = get_empty_data_dict()
@@ -213,7 +231,7 @@ def trainMLPwithAlpha(
                 print(f"ETA: {eta:.5f}s")
 
         timestamp = datetime.now().timestamp()
-        with open(f"results/scor_data_{timestamp}_{batch_size}_{np.abs(np.log10(alpha))}.json", "w", encoding="utf-8") as file:
+        with open(f"{path}/scor_data_{timestamp}_{batch_size}_{np.abs(np.log10(alpha))}.json", "w", encoding="utf-8") as file:
             json.dump(scor_data, file, ensure_ascii=False, indent=4)
 
     except Exception as e:
@@ -223,7 +241,7 @@ def trainMLPwithAlpha(
 
 def trainTargetedMLP(batch_size: int, device: str = "cuda",
           iterations: int = 1000, epochs: int = 5, reducing_factor: float = 0.1,
-          *args, **kwargs):
+          path: str = "./results", *args, **kwargs):
     ce_data, ls_data, focal_data, scor_data = get_empty_data_dict()
 
     train_loader: DataLoader
@@ -330,36 +348,36 @@ def trainTargetedMLP(batch_size: int, device: str = "cuda",
 
         timestamp = datetime.now().timestamp()
 
-        with open(f"results/ce_data_{iterations}_{batch_size}_{reducingName}.json", "w", encoding="utf-8") as file:
+        with open(f"{path}/ce_data_{iterations}_{batch_size}_{reducingName}.json", "w", encoding="utf-8") as file:
             json.dump(ce_data, file, ensure_ascii=False, indent=4)
 
-        with open(f"results/ls_data_{iterations}_{batch_size}_{reducingName}.json", "w", encoding="utf-8") as file:
+        with open(f"{path}/ls_data_{iterations}_{batch_size}_{reducingName}.json", "w", encoding="utf-8") as file:
             json.dump(ls_data, file, ensure_ascii=False, indent=4)
 
-        with open(f"results/focal_data_{iterations}_{batch_size}_{reducingName}.json", "w", encoding="utf-8") as file:
+        with open(f"{path}/focal_data_{iterations}_{batch_size}_{reducingName}.json", "w", encoding="utf-8") as file:
             json.dump(focal_data, file, ensure_ascii=False, indent=4)
 
-        with open(f"results/scor_data_{iterations}_{batch_size}_{reducingName}.json", "w", encoding="utf-8") as file:
+        with open(f"{path}/scor_data_{iterations}_{batch_size}_{reducingName}.json", "w", encoding="utf-8") as file:
             json.dump(scor_data, file, ensure_ascii=False, indent=4)
     except Exception as e:
         print(f"An exception occurred: {e}")
 
         timestamp = datetime.now().timestamp()
 
-        with open(f"results/ce_data_{timestamp}_{batch_size}_{reducingName}.json", "w", encoding="utf-8") as file:
+        with open(f"{path}/ce_data_{timestamp}_{batch_size}_{reducingName}.json", "w", encoding="utf-8") as file:
             json.dump(ce_data, file, ensure_ascii=False, indent=4)
 
-        with open(f"results/ls_data_{timestamp}_{batch_size}_{reducingName}.json", "w", encoding="utf-8") as file:
+        with open(f"{path}/ls_data_{timestamp}_{batch_size}_{reducingName}.json", "w", encoding="utf-8") as file:
             json.dump(ls_data, file, ensure_ascii=False, indent=4)
 
-        with open(f"results/focal_data_{timestamp}_{batch_size}_{reducingName}.json", "w", encoding="utf-8") as file:
+        with open(f"{path}/focal_data_{timestamp}_{batch_size}_{reducingName}.json", "w", encoding="utf-8") as file:
             json.dump(focal_data, file, ensure_ascii=False, indent=4)
 
-        with open(f"results/scor_data_{timestamp}_{batch_size}_{reducingName}.json", "w", encoding="utf-8") as file:
+        with open(f"{path}/scor_data_{timestamp}_{batch_size}_{reducingName}.json", "w", encoding="utf-8") as file:
             json.dump(scor_data, file, ensure_ascii=False, indent=4)
 
 def trainMLPwithdist(batch_size: int, device: str = "cuda",
-          iterations: int = 1000, epochs: int = 5,
+          iterations: int = 1000, epochs: int = 5, path: str = "./results",
           *args, **kwargs):
 
     ce_data_dist, ls_data_dist, focal_data_dist, scor_data_dist = get_empty_dist_dict()
@@ -392,7 +410,7 @@ def trainMLPwithdist(batch_size: int, device: str = "cuda",
 
             _acc, _f1 = model_ce.evaluate(x_test, y_test)
 
-            ranks, singulars = spectral_dist(model_ce)
+            ranks, singulars = spectralDist(model_ce)
 
             ce_data_dist["acc"].append(_acc)
             ce_data_dist["f1"].append(_f1)
@@ -408,7 +426,7 @@ def trainMLPwithdist(batch_size: int, device: str = "cuda",
                 _loss = model_ls.model_training(train_loader, criterion, optimizer, device)
 
             _acc, _f1 = model_ls.evaluate(x_test, y_test)
-            ranks, singulars = spectral_dist(model_ls)
+            ranks, singulars = spectralDist(model_ls)
 
             ls_data_dist["acc"].append(_acc)
             ls_data_dist["f1"].append(_f1)
@@ -424,7 +442,7 @@ def trainMLPwithdist(batch_size: int, device: str = "cuda",
                 _loss = model_focal.model_training(train_loader, criterion, optimizer, device)
 
             _acc, _f1 = model_focal.evaluate(x_test, y_test)
-            ranks, singulars = spectral_dist(model_focal)
+            ranks, singulars = spectralDist(model_focal)
 
             focal_data_dist["acc"].append(_acc)
             focal_data_dist["f1"].append(_f1)
@@ -440,7 +458,7 @@ def trainMLPwithdist(batch_size: int, device: str = "cuda",
                 _loss = model_scor.model_training(train_loader, criterion, optimizer, device)
 
             _acc, _f1 = model_scor.evaluate(x_test, y_test)
-            ranks, singulars = spectral_dist(model_scor)
+            ranks, singulars = spectralDist(model_scor)
 
             scor_data_dist["acc"].append(_acc)
             scor_data_dist["f1"].append(_f1)
@@ -458,40 +476,16 @@ def trainMLPwithdist(batch_size: int, device: str = "cuda",
                 print(f"Training done %{(((i + 1) * 100) / iterations):.5f} | Batch size: {batch_size}")
                 print(f"ETA: {eta:.5f}s")
 
-        timestamp = datetime.now().timestamp()
-
-        with open(f"results/ce_data_{timestamp}_{batch_size}_dist.json", "w", encoding="utf-8") as file:
-            json.dump(ce_data_dist, file, ensure_ascii=False, indent=4)
-
-        with open(f"results/ls_data_{timestamp}_{batch_size}_dist.json", "w", encoding="utf-8") as file:
-            json.dump(ls_data_dist, file, ensure_ascii=False, indent=4)
-
-        with open(f"results/focal_data_{timestamp}_{batch_size}_dist.json", "w", encoding="utf-8") as file:
-            json.dump(focal_data_dist, file, ensure_ascii=False, indent=4)
-
-        with open(f"results/scor_data_{timestamp}_{batch_size}_dist.json", "w", encoding="utf-8") as file:
-            json.dump(scor_data_dist, file, ensure_ascii=False, indent=4)
+        save_dist_dicts(ce_data_dist, ls_data_dist, focal_data_dist, scor_data_dist, batch_size, path)
 
     except Exception as e:
         print(f"An exception occurred: {e}")
 
-        timestamp = datetime.now().timestamp()
-
-        with open(f"results/ce_data_{timestamp}_{batch_size}_dist.json", "w", encoding="utf-8") as file:
-            json.dump(ce_data_dist, file, ensure_ascii=False, indent=4)
-
-        with open(f"results/ls_data_{timestamp}_{batch_size}_dist.json", "w", encoding="utf-8") as file:
-            json.dump(ls_data_dist, file, ensure_ascii=False, indent=4)
-
-        with open(f"results/focal_data_{timestamp}_{batch_size}_dist.json", "w", encoding="utf-8") as file:
-            json.dump(focal_data_dist, file, ensure_ascii=False, indent=4)
-
-        with open(f"results/scor_data_{timestamp}_{batch_size}_dist.json", "w", encoding="utf-8") as file:
-            json.dump(scor_data_dist, file, ensure_ascii=False, indent=4)
+        save_dist_dicts(ce_data_dist, ls_data_dist, focal_data_dist, scor_data_dist, batch_size, path)
 
 def trainTargetedMLPwithdist(batch_size: int, device: str = "cuda",
           iterations: int = 1000, epochs: int = 5, reducing_factor: float = 0.1,
-          *args, **kwargs):
+          path: str = "./results", *args, **kwargs):
     ce_data_dist, ls_data_dist, focal_data_dist, scor_data_dist = get_empty_dist_dict()
 
     train_loader: DataLoader
@@ -526,7 +520,7 @@ def trainTargetedMLPwithdist(batch_size: int, device: str = "cuda",
 
             _acc, _f1 = model_ce.evaluateTargeted(x_test, y_test, target_class=target_class)
 
-            ranks, singulars = spectral_dist(model_ce)
+            ranks, singulars = spectralDist(model_ce)
 
             ce_data_dist["acc"].append(_acc)
             ce_data_dist["f1"].append(_f1)
@@ -542,7 +536,7 @@ def trainTargetedMLPwithdist(batch_size: int, device: str = "cuda",
                 _loss = model_ls.model_training(train_loader, criterion, optimizer, device)
 
             _acc, _f1 = model_ls.evaluateTargeted(x_test, y_test, target_class=target_class)
-            ranks, singulars = spectral_dist(model_ls)
+            ranks, singulars = spectralDist(model_ls)
 
             ls_data_dist["acc"].append(_acc)
             ls_data_dist["f1"].append(_f1)
@@ -558,7 +552,7 @@ def trainTargetedMLPwithdist(batch_size: int, device: str = "cuda",
                 _loss = model_focal.model_training(train_loader, criterion, optimizer, device)
 
             _acc, _f1 = model_focal.evaluateTargeted(x_test, y_test, target_class=target_class)
-            ranks, singulars = spectral_dist(model_focal)
+            ranks, singulars = spectralDist(model_focal)
 
             focal_data_dist["acc"].append(_acc)
             focal_data_dist["f1"].append(_f1)
@@ -574,7 +568,7 @@ def trainTargetedMLPwithdist(batch_size: int, device: str = "cuda",
                 _loss = model_scor.model_training(train_loader, criterion, optimizer, device)
 
             _acc, _f1 = model_scor.evaluateTargeted(x_test, y_test, target_class=target_class)
-            ranks, singulars = spectral_dist(model_scor)
+            ranks, singulars = spectralDist(model_scor)
 
             scor_data_dist["acc"].append(_acc)
             scor_data_dist["f1"].append(_f1)
@@ -594,32 +588,32 @@ def trainTargetedMLPwithdist(batch_size: int, device: str = "cuda",
 
         timestamp = datetime.now().timestamp()
 
-        with open(f"results/ce_data_{iterations}_{batch_size}_{reducingName}_dist.json", "w", encoding="utf-8") as file:
+        with open(f"{path}/ce_data_{iterations}_{batch_size}_{reducingName}_dist.json", "w", encoding="utf-8") as file:
             json.dump(ce_data_dist, file, ensure_ascii=False, indent=4)
 
-        with open(f"results/ls_data_{iterations}_{batch_size}_{reducingName}_dist.json", "w", encoding="utf-8") as file:
+        with open(f"{path}/ls_data_{iterations}_{batch_size}_{reducingName}_dist.json", "w", encoding="utf-8") as file:
             json.dump(ls_data_dist, file, ensure_ascii=False, indent=4)
 
-        with open(f"results/focal_data_{iterations}_{batch_size}_{reducingName}_dist.json", "w", encoding="utf-8") as file:
+        with open(f"{path}/focal_data_{iterations}_{batch_size}_{reducingName}_dist.json", "w", encoding="utf-8") as file:
             json.dump(focal_data_dist, file, ensure_ascii=False, indent=4)
 
-        with open(f"results/scor_data_{iterations}_{batch_size}_{reducingName}_dist.json", "w", encoding="utf-8") as file:
+        with open(f"{path}/scor_data_{iterations}_{batch_size}_{reducingName}_dist.json", "w", encoding="utf-8") as file:
             json.dump(scor_data_dist, file, ensure_ascii=False, indent=4)
     except Exception as e:
         print(f"An exception occurred: {e}")
 
         timestamp = datetime.now().timestamp()
 
-        with open(f"results/ce_data_{timestamp}_{batch_size}_{reducingName}_dist.json", "w", encoding="utf-8") as file:
+        with open(f"{path}/ce_data_{timestamp}_{batch_size}_{reducingName}_dist.json", "w", encoding="utf-8") as file:
             json.dump(ce_data_dist, file, ensure_ascii=False, indent=4)
 
-        with open(f"results/ls_data_{timestamp}_{batch_size}_{reducingName}_dist.json", "w", encoding="utf-8") as file:
+        with open(f"{path}/ls_data_{timestamp}_{batch_size}_{reducingName}_dist.json", "w", encoding="utf-8") as file:
             json.dump(ls_data_dist, file, ensure_ascii=False, indent=4)
 
-        with open(f"results/focal_data_{timestamp}_{batch_size}_{reducingName}_dist.json", "w", encoding="utf-8") as file:
+        with open(f"{path}/focal_data_{timestamp}_{batch_size}_{reducingName}_dist.json", "w", encoding="utf-8") as file:
             json.dump(focal_data_dist, file, ensure_ascii=False, indent=4)
 
-        with open(f"results/scor_data_{timestamp}_{batch_size}_{reducingName}_dist.json", "w", encoding="utf-8") as file:
+        with open(f"{path}/scor_data_{timestamp}_{batch_size}_{reducingName}_dist.json", "w", encoding="utf-8") as file:
             json.dump(scor_data_dist, file, ensure_ascii=False, indent=4)
 
 

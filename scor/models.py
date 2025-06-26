@@ -345,11 +345,18 @@ class FaceVerificationModel(nn.Module):
         return out, f1
 
 def getMLP(device: str = "cuda", loss: str = "ce", *args, **kwargs):
+
+    """
+
+        Generate an MLP, with a dedicated loss function and a fresh optimizer.
+
+    """
+
     model = MLP().to(device)
     if loss == "ce":  # Label smoothing is included here
         _loss = nn.CrossEntropyLoss(*args, **kwargs)
     elif loss == "scor":
-        _loss = SCoR(*args, **kwargs, device=device)
+        _loss = SCoR(*args, **kwargs)
     elif loss == "focal":
         _loss = FocalLoss(*args, **kwargs)
     else:
@@ -359,12 +366,18 @@ def getMLP(device: str = "cuda", loss: str = "ce", *args, **kwargs):
 
 def getResNet(device: str, loss: str = "ce", *args, **kwargs):
 
+    """
+
+        Generate a ResNet, with a dedicated loss function and a fresh optimizer.
+
+    """
+
     model = ResNet().to(device)
 
     if loss == "ce":  # Label smoothing is included here
         _loss = nn.CrossEntropyLoss(*args, **kwargs)
     elif loss == "scor":
-        _loss = SCoR(*args, **kwargs, device=device)
+        _loss = SCoR(*args, **kwargs)
     elif loss == "focal":
         _loss = FocalLoss(*args, **kwargs)
     else:

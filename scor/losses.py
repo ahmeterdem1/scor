@@ -4,12 +4,12 @@ import torch.nn.functional as F
 
 class SCoR(nn.Module):
 
-    def __init__(self, alpha: float = 1e-04, *args, **kwargs):
+    def __init__(self, alpha: float = 1e-04):
         """
             Stochastic Covariance Regularisation. Default alpha is 1e-04.
 
         """
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.alpha = alpha
         self.crossEntropy = nn.CrossEntropyLoss()
 
@@ -29,12 +29,12 @@ class SCoR(nn.Module):
 
 class SCoRandLS(nn.Module):
 
-    def __init__(self, alpha: float = 1e-04, *args, **kwargs):
+    def __init__(self, alpha: float = 1e-04):
         """
             Combination of SCoR with Label Smoothing (LS). LS uses p=0.1, SCoR uses
             the default alpha value of 1e-04.
         """
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.alpha = alpha
         self.crossEntropy = nn.CrossEntropyLoss(label_smoothing=0.1)
 
@@ -90,8 +90,8 @@ class OPL(nn.Module):
 
 class FocalLoss(nn.Module):
 
-    def __init__(self, gamma: float = 2, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, gamma: float = 2):
+        super().__init__()
         self.gamma = gamma
 
     def forward(self, y_pred, y_true):
