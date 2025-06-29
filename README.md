@@ -1,6 +1,14 @@
-# Stochastic Covariance Regularization for Imbalanced Datasets
+# Stochastic Covariance Regularization for Imbalanced Datasets - ICANN 2025 
+
+The repository of the paper "Stochastic Covariance Regularization for Imbalanced Datasets",
+accepted into [ICANN 2025](https://e-nns.org/icann2025/). Conference papers are not yet
+published. When published, a link to the Springer page of the paper will be provided here.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+[PyPi page](https://pypi.org/project/scor/)
+
+[Github page](https://github.com/ahmeterdem1/scor)
 
 _pip install scor_
 

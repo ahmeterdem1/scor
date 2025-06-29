@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "scor"
-version = "0.2.1"
+version = "0.2.2"
 description = "The library for ICANN 2025 Paper 'Stochastic Covariance Regularization for Imbalanced Datasets'"
 authors = [
     "Ahmet Erdem, Faik Boray Tek <erdemah22@itu.edu.tr, tekfb@itu.edu.tr>"

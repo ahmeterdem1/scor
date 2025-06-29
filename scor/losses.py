@@ -7,7 +7,7 @@ class SCoR(nn.Module):
     def __init__(self, alpha: float = 1e-04):
         """
             Stochastic Covariance Regularization. Default alpha is 1e-04.
-
+            Already includes Cross Entropy Loss.
         """
         super().__init__()
         self.alpha = alpha
