@@ -1,8 +1,9 @@
 # Stochastic Covariance Regularization for Imbalanced Datasets - ICANN 2025 
 
 The repository of the paper "Stochastic Covariance Regularization for Imbalanced Datasets",
-accepted into [ICANN 2025](https://e-nns.org/icann2025/). Conference papers are not yet
-published. When published, a link to the Springer page of the paper will be provided here.
+accepted into [ICANN 2025](https://e-nns.org/icann2025/). 
+
+[Access Paper](https://link.springer.com/chapter/10.1007/978-3-032-04558-4_11)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
